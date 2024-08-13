@@ -21,24 +21,15 @@ bool registerPipeline(StringRef Name, FunctionPassManager &FPM, ArrayRef<PassBui
     return false;
 }
 
-PassPluginLibraryInfo getAddConstPluginInfo() {
+PassPluginLibraryInfo getPassPluginInfo() {
     return {LLVM_PLUGIN_API_VERSION, "Pass", LLVM_VERSION_STRING,
             [](PassBuilder &PB) {
-                // 1: Register the AddConstAnalysis as an analysis pass so that
-                // it can be requested by other passes as following:
-                // FPM.getResult<AddConstAnalysis>(F), where FPM is the
-                // FunctionAnalysisManager and F is the Function that shall be
-                // analyzed.
                 PB.registerAnalysisRegistrationCallback(registerAnalyses);
-
-                // 2: Register the AddConstPrinterPass as "print<add-const>" so
-                // that it can be used when specifying pass pipelines with
-                // "-passes=". Also register AddConstPass as "add-const".
                 PB.registerPipelineParsingCallback(registerPipeline);
             }};
 }
 
 // The public entry point for a pass plugin:
 extern "C" LLVM_ATTRIBUTE_WEAK PassPluginLibraryInfo llvmGetPassPluginInfo() {
-    return getAddConstPluginInfo();
+    return getPassPluginInfo();
 }
