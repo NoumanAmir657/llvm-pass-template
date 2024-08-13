@@ -1,6 +1,7 @@
 add_library(
     Pass MODULE
         AnalysisPass.cpp
+        TransformPass.cpp
         Plugin.cpp
 )
 
